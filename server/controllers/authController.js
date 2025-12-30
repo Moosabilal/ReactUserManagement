@@ -80,7 +80,6 @@ const logoutUser = async (req, res) => {
 
 const getUserProfile = async (req, res) => {
   try {
-    console.log('came to backend')
     const user = await User.findById(req.user._id).select("-password"); // Exclude password
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });

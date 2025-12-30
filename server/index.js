@@ -8,9 +8,20 @@ import connectToDatabase from './db/db.js'
 
 connectToDatabase();
 const app = express();
+
+const allowedOrigins = process.env.CLIENT_URL.split(",");
+
 app.use(cors({
-    origin:"http://localhost:5173",
-    credentials:true,
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("CORS not allowed"), false);
+    }
+  },
+  credentials: true
 }));
 app.use(express.json()) 
 app.use('/api/auth',authRouter)
