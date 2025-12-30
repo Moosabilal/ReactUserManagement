@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.get("http://localhost:3000/api/profile/users", {
+    const response = await axios.get(`${API_URL}/api/profile/users`, {
         headers: { Authorization: `Bearer ${token}` },
       withCredentials: true,
     });
@@ -22,8 +23,8 @@ export const updateUsers = createAsyncThunk("users/updateUser", async ({ id, for
       if (!token) {
         return rejectWithValue("No token found. Please log in.");
       }
-  
-      const response = await axios.put(`http://localhost:3000/api/user/update/${id}`, formData, {
+
+      const response = await axios.put(`${API_URL}/api/user/update/${id}`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
   
@@ -36,7 +37,7 @@ export const updateUsers = createAsyncThunk("users/updateUser", async ({ id, for
 export const deleteUser = createAsyncThunk("users/deleteUser", async (id, { rejectWithValue }) => {
   try {
     const token = localStorage.getItem("token");
-    await axios.delete(`http://localhost:3000/api/user/delete/${id}`, {
+    await axios.delete(`${API_URL}/api/user/delete/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return id;
@@ -53,7 +54,7 @@ try {
       return rejectWithValue("No token found. Please log in.");
     }
 
-    const response = await axios.post(`http://localhost:3000/api/user/create`, formData, {
+    const response = await axios.post(`${API_URL}/api/user/create`, formData, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data.user;

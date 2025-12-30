@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const storedUser = JSON.parse(localStorage.getItem("user"));
 const storedAuth = JSON.parse(localStorage.getItem("isAuthenticated"));
@@ -13,7 +14,7 @@ const initialState = {
 
 export const registerUser = createAsyncThunk("auth/register", async (formData) => {
     try {
-      const response = await axios.post("http://localhost:3000/api/auth/register",formData,{ withCredentials: true });
+      const response = await axios.post(`${API_URL}/api/auth/register`,formData,{ withCredentials: true });
       return response.data;
     } catch (error) {
       console.log(error);
@@ -23,7 +24,7 @@ export const registerUser = createAsyncThunk("auth/register", async (formData) =
 
 export const loginUser = createAsyncThunk("auth/login", async (formData) => {
   try {
-    const response = await axios.post("http://localhost:3000/api/auth/login",formData,{ withCredentials: true });
+    const response = await axios.post(`${API_URL}/api/auth/login`,formData,{ withCredentials: true });
     localStorage.setItem("token", response.data.token);
     return response.data;
   } catch (error) {
@@ -34,7 +35,7 @@ export const loginUser = createAsyncThunk("auth/login", async (formData) => {
 export const fetchUserDetails = createAsyncThunk("auth/fetchUser", async (_, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:3000/api/auth/user", {
+      const response = await axios.get(`${API_URL}/api/auth/user`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response.data.user;
@@ -50,7 +51,7 @@ export const updateUser = createAsyncThunk("auth/updateUser", async (userData, {
     const formData = new FormData();
     Object.keys(userData).forEach((key) => formData.append(key, userData[key]));
 
-    const response = await axios.put("http://localhost:3000/api/profile/update", formData, {
+    const response = await axios.put(`${API_URL}/api/profile/update`, formData, {
       headers: { Authorization: `Bearer ${token}` },
       withCredentials: true,
     });
@@ -65,7 +66,7 @@ export const updateUser = createAsyncThunk("auth/updateUser", async (userData, {
 
 export const logoutUser = createAsyncThunk("/auth/logout", async () => {
   try {
-    const response = await axios.post("http://localhost:3000/api/auth/logout",{},{ withCredentials: true });
+    const response = await axios.post(`${API_URL}/api/auth/logout`,{},{ withCredentials: true });
     return response.data;
   } catch (error) {
     console.log(error);
